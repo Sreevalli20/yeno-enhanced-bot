@@ -19,12 +19,11 @@ from pathlib import Path
 
 
 # CORS configuration
-# Add your Vercel domain here after deploying the frontend (e.g., "https://your-app.vercel.app")
-ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    # "https://your-app.vercel.app",  # Uncomment and replace with your Vercel domain
-]
+# Use ALLOWED_ORIGINS environment variable for production origins
+# Format: comma-separated list (e.g., "http://localhost:5173,https://your-app.vercel.app")
+DEFAULT_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "").split(",") if os.environ.get("ALLOWED_ORIGINS") else DEFAULT_ORIGINS
+ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS if origin.strip()]
 
 
 # Configuration constants
@@ -326,7 +325,26 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self) -> None:  # noqa: N802
-        """Handle GET requests for health check."""
+        """Handle GET requests for root and health check."""
+        # Root endpoint - API landing page
+        if self.path == "/":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self._set_cors_headers()
+            body = json.dumps({
+                "service": "YeNo Enhanced Bot",
+                "status": "running",
+                "endpoints": {
+                    "GET /health": "Health check endpoint",
+                    "POST /decide": "Submit market observation for trading decision"
+                },
+                "documentation": "See repository README.md for API details"
+            }).encode()
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         # Health check endpoint
         if self.path == "/health":
             self.send_response(200)

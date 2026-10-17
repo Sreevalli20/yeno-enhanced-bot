@@ -54,10 +54,10 @@ The frontend should be deployed separately on Vercel.
    - Output Directory: `dist`
    - Install Command: `npm install`
 4. Add environment variable:
-   - `VITE_API_BASE_URL`: Set to your Render backend URL (e.g., `https://your-backend.onrender.com`)
+   - `VITE_API_BASE_URL`: Set to `https://yeno-enhanced-bot.onrender.com`
 5. Deploy
 
-The backend (Python bot) is deployed separately on Render and serves the `/health` and `/decide` API endpoints.
+The backend (Python bot) is deployed separately on Render at https://yeno-enhanced-bot.onrender.com and serves the `/health` and `/decide` API endpoints.
 
 ## Tech Stack
 

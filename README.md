@@ -225,7 +225,7 @@ The application uses a separated deployment architecture:
    - Install Command: `npm install`
 
 3. **Add Environment Variable:**
-   - `VITE_API_BASE_URL`: Set to your Render backend URL (e.g., `https://your-app.onrender.com`)
+   - `VITE_API_BASE_URL`: Set to `https://yeno-enhanced-bot.onrender.com`
    - Do not include a trailing slash
 
 4. **Deploy:**
@@ -233,8 +233,9 @@ The application uses a separated deployment architecture:
    - Wait for deployment to complete
    - Vercel will provide a live URL (e.g., `https://your-app.vercel.app`)
 
-5. **Update CORS:**
-   - Add your Vercel domain to `ALLOWED_ORIGINS` in `yeno_competition_starter_bot.py`
+5. **Update CORS on Render:**
+   - Add your Vercel domain to the `ALLOWED_ORIGINS` environment variable in render.yaml
+   - Example: `http://localhost:5173,http://127.0.0.1:5173,https://your-app.vercel.app`
    - Push changes and redeploy the backend on Render
 
 ### Troubleshooting
