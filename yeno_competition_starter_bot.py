@@ -15,6 +15,7 @@ import math
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
+from pathlib import Path
 
 
 # Configuration constants
@@ -300,360 +301,149 @@ def decide(observation: dict[str, Any]) -> dict[str, Any]:
     return BOT.decide(observation)
 
 
-# Homepage HTML with professional chatbot-style interface
-HOMEPAGE_HTML = """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YeNo Enhanced Bot - Paper Trading Research</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .header {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header h1 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        .disclaimer {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #856404;
-        }
-        .disclaimer strong {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .chat-container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .input-section {
-            margin-bottom: 20px;
-        }
-        .input-section label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        textarea {
-            width: 100%;
-            min-height: 200px;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            resize: vertical;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .run-btn {
-            background: #667eea;
-            color: white;
-        }
-        .run-btn:hover {
-            background: #5568d3;
-        }
-        .sample-btn {
-            background: #6c757d;
-            color: white;
-        }
-        .sample-btn:hover {
-            background: #5a6268;
-        }
-        .results-section {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            display: none;
-        }
-        .results-section.visible {
-            display: block;
-        }
-        .results-section h3 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .result-card {
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border-left: 4px solid #28a745;
-        }
-        .result-card.error {
-            border-left-color: #dc3545;
-        }
-        .result-card .label {
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        .result-card .value {
-            font-size: 18px;
-            color: #333;
-        }
-        .result-card .json {
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-            overflow-x: auto;
-        }
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #e7f3ff;
-            border-radius: 8px;
-        }
-        .info-section h3 {
-            color: #0056b3;
-            margin-bottom: 10px;
-        }
-        .info-section p {
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        .info-section ul {
-            margin-left: 20px;
-            color: #333;
-            line-height: 1.6;
-        }
-        @media (max-width: 768px) {
-            .header, .chat-container {
-                padding: 20px;
-            }
-            .button-group {
-                flex-direction: column;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>YeNo Enhanced Bot - Paper Trading Research</h1>
-            <p style="color: #666; margin-top: 10px;">Competition submission for the YeNo × Builderr Volume Bot Challenge</p>
-            
-            <div class="disclaimer">
-                <strong>IMPORTANT DISCLAIMER</strong>
-                This is a paper-trading research bot for a software competition. It does NOT execute real trades, does NOT connect to live markets, does NOT use real money, and does NOT provide financial advice. All decisions are based on simulated historical data for research purposes only.
-            </div>
-        </div>
-
-        <div class="chat-container">
-            <div class="input-section">
-                <label for="observation">Market Observation (JSON)</label>
-                <textarea id="observation" placeholder="Paste your market observation JSON here or click 'Load Sample Data'"></textarea>
-                
-                <div class="button-group">
-                    <button class="run-btn" onclick="runAnalysis()">Run Analysis</button>
-                    <button class="sample-btn" onclick="loadSampleData()">Load Sample Data</button>
-                </div>
-            </div>
-
-            <div class="results-section" id="results">
-                <h3>Analysis Results</h3>
-                <div class="result-card" id="result-card">
-                    <div class="label">Decision</div>
-                    <div class="value" id="decision-value">-</div>
-                    <div class="json" id="decision-json"></div>
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h3>About This Bot</h3>
-                <p>This bot implements an evidence-based trading strategy for the YeNo × Builderr Volume Bot Challenge. It analyzes BTC five-minute Up/Down markets using order book data and reference price signals.</p>
-                
-                <h3>Key Features</h3>
-                <ul>
-                    <li>Adaptive position sizing based on remaining cash and performance</li>
-                    <li>Spread analysis to reject wide-spread markets</li>
-                    <li>Depth requirements for liquidity validation</li>
-                    <li>Imbalance detection to align with order flow</li>
-                    <li>Strict compliance with the official evaluator contract</li>
-                </ul>
-
-                <h3>Compliance</h3>
-                <ul>
-                    <li>$10 starting simulated cash</li>
-                    <li>$5 maximum fee-inclusive BUY</li>
-                    <li>24-hour evaluation window</li>
-                    <li>$1,000 eligible volume target</li>
-                    <li>One position or pending BUY at a time</li>
-                    <li>15-second no-entry zone before expiry</li>
-                </ul>
-
-                <h3>API Endpoints</h3>
-                <ul>
-                    <li><code>GET /health</code> - Health check endpoint</li>
-                    <li><code>POST /decide</code> - Official competition decision endpoint</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const SAMPLE_OBSERVATION = {
-            "schemaVersion": 1,
-            "timestamp": 1789880823.619,
-            "market": {
-                "id": "sample-btc-5m-market",
-                "secondsToClose": 84
-            },
-            "account": {
-                "cashUsd": 10,
-                "eligibleVolumeUsd": 0,
-                "completedCycles": 0,
-                "position": null
-            },
-            "rules": {
-                "maximumBuyCashUsd": 5,
-                "targetVolumeUsd": 1000,
-                "evaluationWindowHours": 24,
-                "onePositionAtATime": true,
-                "buyFeesIncludedInMaximum": true
-            },
-            "reference": {
-                "btcMidUsd": 80482.155,
-                "openingTargetUsd": 80424.946,
-                "observedAt": 1789880823.019,
-                "targetObservedAt": 1789880814.203,
-                "targetProvisional": false
-            },
-            "books": {
-                "YES": {
-                    "bids": [[0.49, 100]],
-                    "asks": [[0.50, 100]],
-                    "minOrderSize": 5
-                },
-                "NO": {
-                    "bids": [[0.49, 100]],
-                    "asks": [[0.50, 100]],
-                    "minOrderSize": 5
-                }
-            }
-        };
-
-        function loadSampleData() {
-            document.getElementById('observation').value = JSON.stringify(SAMPLE_OBSERVATION, null, 2);
-        }
-
-        async function runAnalysis() {
-            const textarea = document.getElementById('observation');
-            const resultsSection = document.getElementById('results');
-            const resultCard = document.getElementById('result-card');
-            const decisionValue = document.getElementById('decision-value');
-            const decisionJson = document.getElementById('decision-json');
-
-            try {
-                const observation = JSON.parse(textarea.value);
-                
-                decisionValue.textContent = 'Processing...';
-                resultsSection.classList.add('visible');
-                resultCard.classList.remove('error');
-
-                const response = await fetch('/decide', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(observation)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const decision = await response.json();
-                
-                decisionValue.textContent = decision.action;
-                decisionJson.textContent = JSON.stringify(decision, null, 2);
-                
-                if (decision.action === 'BUY') {
-                    decisionValue.textContent += ` ${decision.outcome} ($${decision.maxCashUsd.toFixed(2)})`;
-                }
-
-            } catch (error) {
-                resultsSection.classList.add('visible');
-                resultCard.classList.add('error');
-                decisionValue.textContent = 'Error';
-                decisionJson.textContent = error.message;
-            }
-        }
-    </script>
-</body>
-</html>
-"""
+# Path to the React build directory
+FRONTEND_DIR = Path(__file__).parent / "frontend" / "dist"
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802
-        """Handle GET requests for homepage and health check."""
-        if self.path == "/":
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            body = HOMEPAGE_HTML.encode()
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
-        elif self.path == "/health":
+        """Handle GET requests for React frontend, health check, and static assets."""
+        # Health check endpoint
+        if self.path == "/health":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             body = json.dumps({"status": "healthy"}).encode()
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
-        else:
-            self.send_error(404)
+            return
+
+        # Serve React frontend
+        if self.path == "/":
+            index_path = FRONTEND_DIR / "index.html"
+            if index_path.exists():
+                self._serve_file(index_path, "text/html; charset=utf-8")
+            else:
+                # Fallback to simple HTML if build doesn't exist
+                self._serve_fallback_homepage()
+            return
+
+        # Serve static assets (JS, CSS, etc.)
+        if self.path.startswith("/assets/"):
+            asset_path = FRONTEND_DIR / self.path.lstrip("/")
+            if asset_path.exists():
+                content_type = self._get_content_type(asset_path)
+                self._serve_file(asset_path, content_type)
+            else:
+                self.send_error(404)
+            return
+
+        # Serve favicon
+        if self.path == "/favicon.svg":
+            favicon_path = FRONTEND_DIR / "favicon.svg"
+            if favicon_path.exists():
+                self._serve_file(favicon_path, "image/svg+xml")
+            else:
+                self.send_error(404)
+            return
+
+        # All other paths return 404
+        self.send_error(404)
+
+    def _serve_file(self, file_path: Path, content_type: str) -> None:
+        """Serve a static file with the given content type."""
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        body = file_path.read_bytes()
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _get_content_type(self, file_path: Path) -> str:
+        """Get content type based on file extension."""
+        suffix = file_path.suffix.lower()
+        content_types = {
+            ".js": "application/javascript",
+            ".css": "text/css",
+            ".html": "text/html; charset=utf-8",
+            ".svg": "image/svg+xml",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".json": "application/json",
+        }
+        return content_types.get(suffix, "application/octet-stream")
+
+    def _serve_fallback_homepage(self) -> None:
+        """Serve a simple fallback homepage if React build is not available."""
+        html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YeNo Research Console</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: #f1f5f9; margin-bottom: 20px; }
+        .disclaimer {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #f59e0b;
+        }
+        .endpoint {
+            background: #1e293b;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        code {
+            background: #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YeNo Research Console</h1>
+        <div class="disclaimer">
+            <strong>Frontend Build Not Found</strong>
+            <p>The React frontend build is not available. Please build the frontend first:</p>
+            <code>cd frontend && npm run build</code>
+        </div>
+        <h2>Available API Endpoints</h2>
+        <div class="endpoint">
+            <strong>GET /health</strong><br>
+            Health check endpoint
+        </div>
+        <div class="endpoint">
+            <strong>POST /decide</strong><br>
+            Submit market observation for decision
+        </div>
+    </div>
+</body>
+</html>"""
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        body = html.encode()
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def do_POST(self) -> None:  # noqa: N802
         """Handle POST requests for /decide endpoint."""

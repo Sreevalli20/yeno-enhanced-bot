@@ -17,14 +17,27 @@ This is an enhanced trading bot for the YeNo × Builderr $500 Volume Bot Challen
 python --version
 ```
 
-2. Start the bot:
+2. Build the frontend (optional - fallback available if not built):
+```bash
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
+3. Start the bot:
 ```bash
 python yeno_competition_starter_bot.py
 ```
 
 The bot will start on `http://127.0.0.1:8080` by default.
 
-3. Test with the official smoke test (in a separate terminal):
+4. Access the web interface:
+   - Open `http://127.0.0.1:8080` in your browser
+   - Use the Decision Workspace to test observations
+   - View API documentation in the Docs tab
+
+5. Test with the official smoke test (in a separate terminal):
 ```bash
 python yeno-smoke-test.py
 ```
@@ -171,12 +184,13 @@ See `yeno-evaluator-contract.md` for the complete official contract.
 
 3. **Verify Settings:**
    - Runtime: Python 3
-   - Build Command: `pip install -r requirements.txt`
+   - Build Command: `cd frontend && npm install && npm run build && cd .. && pip install -r requirements.txt`
    - Start Command: `python yeno_competition_starter_bot.py`
    - Health Check Path: `/health`
    - Environment Variables:
      - `PORT`: 10000 (or leave as configured in render.yaml)
      - `HOST`: 0.0.0.0
+     - `NODE_VERSION`: 20
 
 4. **Deploy:**
    - Click "Create Web Service"
@@ -205,8 +219,9 @@ See `yeno-evaluator-contract.md` for the complete official contract.
 
 ```
 yeno-starter-kit/
-├── yeno_competition_starter_bot.py  # Main bot implementation
+├── yeno_competition_starter_bot.py  # Main bot implementation with HTTP server
 ├── test_enhanced_bot.py              # Comprehensive test suite
+├── test_web_interface.py            # Web interface tests
 ├── yeno-smoke-test.py                # Official smoke test
 ├── yeno-sample-observation.json      # Official sample observation
 ├── yeno-house-bot-v1.py             # Baseline reference bot
@@ -215,17 +230,34 @@ yeno-starter-kit/
 ├── yeno-house-bot-benchmark.md       # Official benchmark results
 ├── yeno-starter-readme.md            # Original starter kit readme
 ├── STRATEGY_COMPARISON.md            # Detailed strategy comparison
-├── requirements.txt                  # Dependencies (none required)
+├── requirements.txt                  # Python dependencies (none required)
 ├── render.yaml                       # Render deployment configuration
 ├── .gitignore                        # Git ignore rules
+├── frontend/                         # React + TypeScript frontend
+│   ├── src/                          # Source code
+│   ├── dist/                         # Production build (generated)
+│   ├── package.json                  # Frontend dependencies
+│   └── README.md                     # Frontend documentation
 └── README.md                         # This file
 ```
 
 ## Dependencies
 
-**None** - This project uses only Python 3.14 standard library.
+### Python
+**None** - The Python backend uses only Python 3.14 standard library.
 
-No external packages, API keys, or databases required.
+### Frontend
+The React frontend requires:
+- Node.js 20+
+- npm
+
+Dependencies are listed in `frontend/package.json`:
+- React 19
+- TypeScript
+- Vite
+- Lucide React (icons)
+
+No external APIs, databases, or paid services required.
 
 ## Important Limitations
 

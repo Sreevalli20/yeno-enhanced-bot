@@ -65,15 +65,10 @@ def test_homepage() -> None:
     with urllib.request.urlopen(request, timeout=5) as response:
         html = response.read().decode("utf-8")
 
-    assert "YeNo Enhanced Bot" in html, "Homepage should contain title"
-    assert "Paper Trading Research" in html, "Homepage should mention paper trading"
-    assert "IMPORTANT DISCLAIMER" in html, "Homepage should have disclaimer"
-    assert "paper-trading research bot" in html, "Homepage should explain it's a research bot"
-    assert "does NOT execute real trades" in html, "Homepage should state no real trades"
-    assert "Run Analysis" in html, "Homepage should have analysis button"
-    assert "Load Sample Data" in html, "Homepage should have sample data button"
-    assert "GET /health" in html, "Homepage should document health endpoint"
-    assert "POST /decide" in html, "Homepage should document decide endpoint"
+    # Check for React frontend content
+    assert "YeNo Research Console" in html, "Homepage should contain title"
+    assert "<!doctype html>" in html.lower(), "Homepage should be valid HTML"
+    assert "<div id=\"root\">" in html, "Homepage should have React root"
     print("[PASS] Homepage test passed")
 
 
