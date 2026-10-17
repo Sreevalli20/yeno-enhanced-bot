@@ -176,15 +176,15 @@ Prepare the following information for submission to `submit@builderr.ai`:
    - Your GitHub repository URL (e.g., `https://github.com/yourusername/yeno-enhanced-bot`)
 
 4. **Exact Git Commit SHA:**
-   - `391c6e3d90ef943b760954ab1bcb9bb172cd6447`
-   - (This is the commit from the local repository before upload)
-   - After uploading to GitHub, you may need to re-commit if you made changes
-   - To get the SHA from GitHub: Click commits → Copy the full SHA
+   - Get the final commit SHA after making changes locally
+   - Run: `git rev-parse HEAD`
+   - Copy the 40-character SHA for submission
+   - After uploading to GitHub, verify the SHA matches
 
 5. **Immutable GitHub Commit URL Format:**
-   - `https://github.com/yourusername/yeno-enhanced-bot/commit/391c6e3d90ef943b760954ab1bcb9bb172cd6447`
+   - `https://github.com/yourusername/yeno-enhanced-bot/commit/YOUR_COMMIT_SHA`
    - Replace `yourusername` with your actual GitHub username
-   - Replace the SHA if you made additional commits after upload
+   - Replace `YOUR_COMMIT_SHA` with the actual commit SHA from your repository
 
 6. **HTTPS Endpoint (if deployed):**
    - Your Render URL: `https://your-app-name.onrender.com`

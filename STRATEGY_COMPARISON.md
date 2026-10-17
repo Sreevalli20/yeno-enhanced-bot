@@ -11,9 +11,10 @@
   - Base shares adjusted 0.5x to 1.2x based on conditions
 
 ### 2. Expanded Trading Window
-- **House Bot v1**: 30-second window (90s entry - 60s forced exit)
+- **House Bot v1**: 75-second window (90s entry - 15s forced exit)
 - **Enhanced Bot**: 105-second window (120s entry - 15s forced exit)
   - Allows more opportunities while maintaining safe exit margin
+  - Both respect the 15-second no-entry zone before expiry
 
 ### 3. Spread Analysis
 - **House Bot v1**: No spread filtering
