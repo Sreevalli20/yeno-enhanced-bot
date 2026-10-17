@@ -176,12 +176,12 @@ Prepare the following information for submission to `submit@builderr.ai`:
    - Your GitHub repository URL (e.g., `https://github.com/yourusername/yeno-enhanced-bot`)
 
 4. **Exact Git Commit SHA:**
-   - Current local commit: `2953c15e72c0b78fab88f3914a5e477a2e14f7e8`
+   - Current local commit: `890e94154ae1676fb6d41393a4477dfad606c27e`
    - After uploading to GitHub, verify the SHA matches
    - Run: `git rev-parse HEAD` to confirm
 
 5. **Immutable GitHub Commit URL Format:**
-   - `https://github.com/yourusername/yeno-enhanced-bot/commit/2953c15e72c0b78fab88f3914a5e477a2e14f7e8`
+   - `https://github.com/yourusername/yeno-enhanced-bot/commit/890e94154ae1676fb6d41393a4477dfad606c27e`
    - Replace `yourusername` with your actual GitHub username
 
 6. **HTTPS Endpoint (if deployed):**
@@ -366,6 +366,17 @@ All contract requirements verified:
 **Issue:** MIN_SECONDS_TO_CLOSE was set to 20s, but contract specifies 15s no-entry zone
 **Fix:** Changed to 15s to match contract exactly
 **Impact:** Ensures strict compliance with evaluator's no-entry restriction
+
+### Final Commit Information
+
+**Commit SHA:** `890e94154ae1676fb6d41393a4477dfad606c27e`
+**Commit Message:** "Add final verification results and commit SHA to documentation"
+**Files Modified:** README.md, DEPLOYMENT_GUIDE.md
+**Previous Commits:**
+- 2953c15: Fix contract compliance: align MIN_SECONDS_TO_CLOSE with 15s no-entry rule
+- 6d6a425: Add comprehensive deployment and submission guide
+- 391c6e3: Render-ready deployment with health check and comprehensive documentation
+- bce73f8: Enhanced YeNo volume bot with adaptive strategy and comprehensive testing
 
 ## Important Notes
 
