@@ -6,8 +6,6 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: python yeno_competition_starter_bot.py
     envVars:
-      - key: PORT
-        value: 10000
       - key: HOST
         value: 0.0.0.0
     healthCheckPath: /health
