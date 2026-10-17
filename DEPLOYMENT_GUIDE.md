@@ -176,12 +176,12 @@ Prepare the following information for submission to `submit@builderr.ai`:
    - Your GitHub repository URL (e.g., `https://github.com/yourusername/yeno-enhanced-bot`)
 
 4. **Exact Git Commit SHA:**
-   - Current local commit: `8e2c4caacb544bf01dfe8fbd58e8461a82ed39d1`
+   - Current local commit: `fbf54a9231b992a2e0891ff99cd5a9b7c041f04c`
    - After uploading to GitHub, verify the SHA matches
    - Run: `git rev-parse HEAD` to confirm
 
 5. **Immutable GitHub Commit URL Format:**
-   - `https://github.com/yourusername/yeno-enhanced-bot/commit/8e2c4caacb544bf01dfe8fbd58e8461a82ed39d1`
+   - `https://github.com/yourusername/yeno-enhanced-bot/commit/fbf54a9231b992a2e0891ff99cd5a9b7c041f04c`
    - Replace `yourusername` with your actual GitHub username
 
 6. **HTTPS Endpoint (if deployed):**
@@ -369,10 +369,11 @@ All contract requirements verified:
 
 ### Final Commit Information
 
-**Commit SHA:** `8e2c4caacb544bf01dfe8fbd58e8461a82ed39d1`
-**Commit Message:** "Update documentation with final commit SHA (890e941)"
+**Commit SHA:** `fbf54a9231b992a2e0891ff99cd5a9b7c041f04c`
+**Commit Message:** "Final documentation update with correct commit SHA (8e2c4ca)"
 **Files Modified:** README.md, DEPLOYMENT_GUIDE.md
 **Previous Commits:**
+- 8e2c4ca: Update documentation with final commit SHA (890e941)
 - 890e941: Add final verification results and commit SHA to documentation
 - 2953c15: Fix contract compliance: align MIN_SECONDS_TO_CLOSE with 15s no-entry rule
 - 6d6a425: Add comprehensive deployment and submission guide
