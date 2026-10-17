@@ -9,5 +9,5 @@ services:
       - key: HOST
         value: 0.0.0.0
       - key: ALLOWED_ORIGINS
-        value: http://localhost:5173,http://127.0.0.1:5173,https://frontend-bpg3.vercel.app
+        value: http://localhost:5173,http://127.0.0.1:5173,https://frontend-bpg3.vercel.app,https://frontend-gamma-ecru-m8dndislo7.vercel.app
     healthCheckPath: /health
