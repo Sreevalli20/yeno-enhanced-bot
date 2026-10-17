@@ -176,13 +176,14 @@ Prepare the following information for submission to `submit@builderr.ai`:
    - Your GitHub repository URL (e.g., `https://github.com/yourusername/yeno-enhanced-bot`)
 
 4. **Exact Git Commit SHA:**
-   - Current local commit: `fbf54a9231b992a2e0891ff99cd5a9b7c041f04c`
+   - Run: `git rev-parse HEAD` in your local repository
+   - Copy the 40-character SHA
    - After uploading to GitHub, verify the SHA matches
-   - Run: `git rev-parse HEAD` to confirm
 
 5. **Immutable GitHub Commit URL Format:**
-   - `https://github.com/yourusername/yeno-enhanced-bot/commit/fbf54a9231b992a2e0891ff99cd5a9b7c041f04c`
+   - `https://github.com/yourusername/yeno-enhanced-bot/commit/YOUR_COMMIT_SHA`
    - Replace `yourusername` with your actual GitHub username
+   - Replace `YOUR_COMMIT_SHA` with the actual commit SHA
 
 6. **HTTPS Endpoint (if deployed):**
    - Your Render URL: `https://your-app-name.onrender.com`
@@ -369,16 +370,10 @@ All contract requirements verified:
 
 ### Final Commit Information
 
-**Commit SHA:** `fbf54a9231b992a2e0891ff99cd5a9b7c041f04c`
-**Commit Message:** "Final documentation update with correct commit SHA (8e2c4ca)"
-**Files Modified:** README.md, DEPLOYMENT_GUIDE.md
-**Previous Commits:**
-- 8e2c4ca: Update documentation with final commit SHA (890e941)
-- 890e941: Add final verification results and commit SHA to documentation
-- 2953c15: Fix contract compliance: align MIN_SECONDS_TO_CLOSE with 15s no-entry rule
-- 6d6a425: Add comprehensive deployment and submission guide
-- 391c6e3: Render-ready deployment with health check and comprehensive documentation
-- bce73f8: Enhanced YeNo volume bot with adaptive strategy and comprehensive testing
+After uploading to GitHub and making your final commit:
+- Run: `git rev-parse HEAD` to get your commit SHA
+- Use this SHA in your Builderr submission
+- The commit history should include the contract compliance fix and verification documentation
 
 ## Important Notes
 

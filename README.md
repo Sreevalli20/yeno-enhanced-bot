@@ -113,7 +113,7 @@ All tests passed!
 - Local server health check: PASSED
 - Local /decide endpoint: PASSED
 - Contract compliance: VERIFIED (including 15s no-entry zone)
-- Git commit: fbf54a9231b992a2e0891ff99cd5a9b7c041f04c
+- Git commit: Use `git rev-parse HEAD` to get your final commit SHA
 
 ## Strategy Improvements
 
