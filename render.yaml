@@ -3,12 +3,9 @@ services:
     name: yeno-enhanced-bot
     runtime: python
     plan: free
-    buildCommand: |
-      cd frontend && npm install && npm run build && cd .. && pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: python yeno_competition_starter_bot.py
     envVars:
       - key: HOST
         value: 0.0.0.0
-      - key: NODE_VERSION
-        value: 20
     healthCheckPath: /health

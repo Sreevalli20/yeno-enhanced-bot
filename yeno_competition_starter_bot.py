@@ -18,6 +18,15 @@ from typing import Any
 from pathlib import Path
 
 
+# CORS configuration
+# Add your Vercel domain here after deploying the frontend (e.g., "https://your-app.vercel.app")
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    # "https://your-app.vercel.app",  # Uncomment and replace with your Vercel domain
+]
+
+
 # Configuration constants
 MIN_SECONDS_TO_CLOSE = 15
 MAX_ENTRY_SECONDS_TO_CLOSE = 120
@@ -301,149 +310,36 @@ def decide(observation: dict[str, Any]) -> dict[str, Any]:
     return BOT.decide(observation)
 
 
-# Path to the React build directory
-FRONTEND_DIR = Path(__file__).parent / "frontend" / "dist"
-
-
 class Handler(BaseHTTPRequestHandler):
+    def _set_cors_headers(self) -> None:
+        """Set CORS headers for API endpoints."""
+        origin = self.headers.get("Origin", "")
+        if origin in ALLOWED_ORIGINS:
+            self.send_header("Access-Control-Allow-Origin", origin)
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def do_OPTIONS(self) -> None:  # noqa: N802
+        """Handle OPTIONS requests for CORS preflight."""
+        self.send_response(200)
+        self._set_cors_headers()
+        self.end_headers()
+
     def do_GET(self) -> None:  # noqa: N802
-        """Handle GET requests for React frontend, health check, and static assets."""
+        """Handle GET requests for health check."""
         # Health check endpoint
         if self.path == "/health":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
+            self._set_cors_headers()
             body = json.dumps({"status": "healthy"}).encode()
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
             return
 
-        # Serve React frontend
-        if self.path == "/":
-            index_path = FRONTEND_DIR / "index.html"
-            if index_path.exists():
-                self._serve_file(index_path, "text/html; charset=utf-8")
-            else:
-                # Fallback to simple HTML if build doesn't exist
-                self._serve_fallback_homepage()
-            return
-
-        # Serve static assets (JS, CSS, etc.)
-        if self.path.startswith("/assets/"):
-            asset_path = FRONTEND_DIR / self.path.lstrip("/")
-            if asset_path.exists():
-                content_type = self._get_content_type(asset_path)
-                self._serve_file(asset_path, content_type)
-            else:
-                self.send_error(404)
-            return
-
-        # Serve favicon
-        if self.path == "/favicon.svg":
-            favicon_path = FRONTEND_DIR / "favicon.svg"
-            if favicon_path.exists():
-                self._serve_file(favicon_path, "image/svg+xml")
-            else:
-                self.send_error(404)
-            return
-
         # All other paths return 404
         self.send_error(404)
-
-    def _serve_file(self, file_path: Path, content_type: str) -> None:
-        """Serve a static file with the given content type."""
-        self.send_response(200)
-        self.send_header("Content-Type", content_type)
-        body = file_path.read_bytes()
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
-
-    def _get_content_type(self, file_path: Path) -> str:
-        """Get content type based on file extension."""
-        suffix = file_path.suffix.lower()
-        content_types = {
-            ".js": "application/javascript",
-            ".css": "text/css",
-            ".html": "text/html; charset=utf-8",
-            ".svg": "image/svg+xml",
-            ".png": "image/png",
-            ".jpg": "image/jpeg",
-            ".jpeg": "image/jpeg",
-            ".json": "application/json",
-        }
-        return content_types.get(suffix, "application/octet-stream")
-
-    def _serve_fallback_homepage(self) -> None:
-        """Serve a simple fallback homepage if React build is not available."""
-        html = """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YeNo Research Console</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
-            color: #f1f5f9;
-            margin: 0;
-            padding: 40px;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 { color: #f1f5f9; margin-bottom: 20px; }
-        .disclaimer {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            padding: 16px;
-            border-radius: 8px;
-            margin: 20px 0;
-            color: #f59e0b;
-        }
-        .endpoint {
-            background: #1e293b;
-            padding: 16px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-family: monospace;
-        }
-        code {
-            background: #334155;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>YeNo Research Console</h1>
-        <div class="disclaimer">
-            <strong>Frontend Build Not Found</strong>
-            <p>The React frontend build is not available. Please build the frontend first:</p>
-            <code>cd frontend && npm run build</code>
-        </div>
-        <h2>Available API Endpoints</h2>
-        <div class="endpoint">
-            <strong>GET /health</strong><br>
-            Health check endpoint
-        </div>
-        <div class="endpoint">
-            <strong>POST /decide</strong><br>
-            Submit market observation for decision
-        </div>
-    </div>
-</body>
-</html>"""
-        self.send_response(200)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        body = html.encode()
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
 
     def do_POST(self) -> None:  # noqa: N802
         """Handle POST requests for /decide endpoint."""
@@ -462,6 +358,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
+        self._set_cors_headers()
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)

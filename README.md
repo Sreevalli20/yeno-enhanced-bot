@@ -17,7 +17,7 @@ This is an enhanced trading bot for the YeNo × Builderr $500 Volume Bot Challen
 python --version
 ```
 
-2. Build the frontend (optional - fallback available if not built):
+2. Build the frontend (optional for local backend testing):
 ```bash
 cd frontend
 npm install
@@ -162,14 +162,13 @@ The bot strictly adheres to all official evaluator contract requirements:
 
 See `yeno-evaluator-contract.md` for the complete official contract.
 
-## Render Deployment
+## Deployment
 
-### Prerequisites
+The application uses a separated deployment architecture:
+- **Backend (Python bot)**: Deployed on Render
+- **Frontend (React dashboard)**: Deployed on Vercel
 
-- GitHub account with the repository uploaded
-- Render account (free tier sufficient)
-
-### Deployment Steps
+### Backend Deployment (Render)
 
 1. **Push your code to GitHub:**
    - Create a new repository on GitHub
@@ -184,18 +183,17 @@ See `yeno-evaluator-contract.md` for the complete official contract.
 
 3. **Verify Settings:**
    - Runtime: Python 3
-   - Build Command: `cd frontend && npm install && npm run build && cd .. && pip install -r requirements.txt`
+   - Build Command: `pip install -r requirements.txt`
    - Start Command: `python yeno_competition_starter_bot.py`
    - Health Check Path: `/health`
    - Environment Variables:
      - `PORT`: 10000 (or leave as configured in render.yaml)
      - `HOST`: 0.0.0.0
-     - `NODE_VERSION`: 20
 
 4. **Deploy:**
    - Click "Create Web Service"
    - Wait for deployment to complete (usually 1-2 minutes)
-   - Render will provide a live HTTPS URL
+   - Render will provide a live HTTPS URL (e.g., `https://your-app.onrender.com`)
 
 5. **Test Live Endpoint:**
    ```bash
@@ -208,12 +206,50 @@ See `yeno-evaluator-contract.md` for the complete official contract.
      -d @yeno-sample-observation.json
    ```
 
+6. **Add Vercel domain to CORS:**
+   - After deploying the frontend on Vercel, add your Vercel domain to the `ALLOWED_ORIGINS` list in `yeno_competition_starter_bot.py`
+   - Redeploy the backend on Render
+
+### Frontend Deployment (Vercel)
+
+1. **Connect your GitHub repository to Vercel:**
+   - Log in to [Vercel](https://vercel.com)
+   - Click "Add New Project"
+   - Import your GitHub repository
+
+2. **Configure Vercel settings:**
+   - Framework Preset: Vite
+   - Root Directory: `frontend`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+
+3. **Add Environment Variable:**
+   - `VITE_API_BASE_URL`: Set to your Render backend URL (e.g., `https://your-app.onrender.com`)
+   - Do not include a trailing slash
+
+4. **Deploy:**
+   - Click "Deploy"
+   - Wait for deployment to complete
+   - Vercel will provide a live URL (e.g., `https://your-app.vercel.app`)
+
+5. **Update CORS:**
+   - Add your Vercel domain to `ALLOWED_ORIGINS` in `yeno_competition_starter_bot.py`
+   - Push changes and redeploy the backend on Render
+
 ### Troubleshooting
 
+**Backend (Render):**
 - Check Render logs for startup errors
 - Ensure `PORT` and `HOST` environment variables are set
 - Verify the bot listens on `0.0.0.0` (not `127.0.0.1`) for production
 - Health check should return `{"status":"healthy"}`
+
+**Frontend (Vercel):**
+- Ensure `VITE_API_BASE_URL` is set correctly in Vercel environment variables
+- Check browser console for CORS errors
+- Verify the backend URL is accessible from the browser
+- Add your Vercel domain to the backend's `ALLOWED_ORIGINS` list
 
 ## Project Structure
 
@@ -231,12 +267,15 @@ yeno-starter-kit/
 ├── yeno-starter-readme.md            # Original starter kit readme
 ├── STRATEGY_COMPARISON.md            # Detailed strategy comparison
 ├── requirements.txt                  # Python dependencies (none required)
-├── render.yaml                       # Render deployment configuration
+├── render.yaml                       # Render deployment configuration (backend)
 ├── .gitignore                        # Git ignore rules
 ├── frontend/                         # React + TypeScript frontend
 │   ├── src/                          # Source code
 │   ├── dist/                         # Production build (generated)
+│   ├── vercel.json                   # Vercel deployment configuration
 │   ├── package.json                  # Frontend dependencies
+│   ├── vite.config.ts                # Vite configuration with proxy
+│   ├── .env.example                  # Environment variable template
 │   └── README.md                     # Frontend documentation
 └── README.md                         # This file
 ```

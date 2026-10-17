@@ -42,7 +42,22 @@ See `.env.example` for the template.
 
 ## Deployment
 
-The frontend is built during the Render deployment process and served by the Python server. No separate frontend deployment is needed.
+The frontend should be deployed separately on Vercel.
+
+### Vercel Deployment
+
+1. Connect your GitHub repository to Vercel
+2. Set the root directory to `frontend`
+3. Configure build settings:
+   - Framework Preset: Vite
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+4. Add environment variable:
+   - `VITE_API_BASE_URL`: Set to your Render backend URL (e.g., `https://your-backend.onrender.com`)
+5. Deploy
+
+The backend (Python bot) is deployed separately on Render and serves the `/health` and `/decide` API endpoints.
 
 ## Tech Stack
 
