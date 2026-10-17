@@ -113,7 +113,7 @@ All tests passed!
 - Local server health check: PASSED
 - Local /decide endpoint: PASSED
 - Contract compliance: VERIFIED (including 15s no-entry zone)
-- Git commit: 890e94154ae1676fb6d41393a4477dfad606c27e
+- Git commit: 8e2c4caacb544bf01dfe8fbd58e8461a82ed39d1
 
 ## Strategy Improvements
 
