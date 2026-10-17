@@ -8,8 +8,6 @@ services:
     envVars:
       - key: HOST
         value: 0.0.0.0
-      # Update ALLOWED_ORIGINS after Vercel deployment to include your Vercel domain
-      # Example: http://localhost:5173,http://127.0.0.1:5173,https://your-app.vercel.app
       - key: ALLOWED_ORIGINS
-        value: http://localhost:5173,http://127.0.0.1:5173
+        value: http://localhost:5173,http://127.0.0.1:5173,https://frontend-bpg3.vercel.app
     healthCheckPath: /health

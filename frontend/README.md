@@ -72,6 +72,7 @@ The backend (Python bot) is deployed separately on Render at https://yeno-enhanc
 - Dark theme with navy/charcoal background
 - Decision workspace with JSON input and validation
 - Real-time backend health monitoring
-- API documentation
+- Sample observation loading and reset functionality
+- Copy response functionality
 - Responsive design for desktop, tablet, and mobile
 - Accessible components with keyboard navigation
