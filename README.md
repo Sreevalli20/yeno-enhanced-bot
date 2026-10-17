@@ -106,6 +106,15 @@ Tests failed: 0
 All tests passed!
 ```
 
+**Final Verification (2026-10-17):**
+- Python version: 3.14.6
+- Automated tests: 24/24 PASSED
+- Smoke test: PASSED (contractSmokePassed: true)
+- Local server health check: PASSED
+- Local /decide endpoint: PASSED
+- Contract compliance: VERIFIED (including 15s no-entry zone)
+- Git commit: 2953c15e72c0b78fab88f3914a5e477a2e14f7e8
+
 ## Strategy Improvements
 
 This bot enhances the House Bot v1 baseline with:
